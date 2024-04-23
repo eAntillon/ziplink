@@ -1,15 +1,19 @@
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
 import { type AppType } from "next/app";
-import { Inter } from "next/font/google";
-
+import { Open_Sans } from "next/font/google";
+import '@radix-ui/themes/styles.css';
 import { api } from "~/utils/api";
-
 import "~/styles/globals.css";
+import { Theme } from "@radix-ui/themes";
+import { Toaster } from 'react-hot-toast';
 
-const inter = Inter({
+
+const sanchez = Open_Sans({
+  weight: "400",
+  style: ["normal", "italic"],
+  display: "swap",
   subsets: ["latin"],
-  variable: "--font-sans",
 });
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -18,9 +22,12 @@ const MyApp: AppType<{ session: Session | null }> = ({
 }) => {
   return (
     <SessionProvider session={session}>
-      <main className={`font-sans ${inter.variable}`}>
-        <Component {...pageProps} />
-      </main>
+      <Theme>
+        <main className={sanchez.className + " bg-pattern"}>
+          <Component {...pageProps} />
+          <Toaster />
+        </main>
+      </Theme>
     </SessionProvider>
   );
 };

@@ -1,3 +1,34 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.radix-themes {
+  --default-font-family: var(--font-sanchez);
+}
+
+.bg-pattern {
+  position: relative;
+  overflow: hidden; /* Ensures the animated background does not bleed outside the boundaries */
+  z-index: 100; /* Behind the content */
+}
+.bg-pattern:before {
+  content: "";
+  position: absolute;
+  /* start from top 0*/
+  top: 0;
+  left: 0;
+  width: 100dvw;
+  height: 400dvh;
+  background-image: url("/bg-pattern.png");
+  animation: slideBackground 60s linear infinite;
+  z-index: -1; /* Behind the content */
+}
+
+@keyframes slideBackground {
+  from {
+    top: 0%; /* Start from the bottom */
+  }
+  to {
+    top: -100%; /* End at the top */
+  }
+}

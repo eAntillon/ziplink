@@ -8,13 +8,19 @@
  */
 
 import { initTRPC, TRPCError } from "@trpc/server";
-import { type CreateNextContextOptions } from "@trpc/server/adapters/next";
+import { NextApiRequest, type CreateNextContextOptions } from "@trpc/server/adapters/next";
 import { type Session } from "next-auth";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
 import { getServerAuthSession } from "~/server/auth";
 import { db } from "~/server/db";
+
+
+import {
+  createTRPCStoreLimiter,
+  defaultFingerPrint,
+} from '@trpc-limiter/memory'
 
 /**
  * 1. CONTEXT
@@ -26,6 +32,7 @@ import { db } from "~/server/db";
 
 interface CreateContextOptions {
   session: Session | null;
+  req?: NextApiRequest;
 }
 
 /**
@@ -42,6 +49,7 @@ const createInnerTRPCContext = (opts: CreateContextOptions) => {
   return {
     session: opts.session,
     db,
+    req: opts.req,
   };
 };
 
@@ -59,6 +67,7 @@ export const createTRPCContext = async (opts: CreateNextContextOptions) => {
 
   return createInnerTRPCContext({
     session,
+    req
   });
 };
 
@@ -133,3 +142,25 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
     },
   });
 });
+
+
+
+// limit rated procedure
+
+const limiter = createTRPCStoreLimiter<typeof t>({
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-argument
+  fingerprint: (ctx): string => defaultFingerPrint(ctx.req as unknown as NextApiRequest),
+  windowMs: 20000,
+  message: (retryAfter) =>
+    `Too many requests, please try again later. ${retryAfter}`,
+  max: 5,
+  onLimit: (retryAfter, _ctx, fingerprint) => {
+    console.log({retryAfter, fingerprint})
+    throw new TRPCError({
+      code: 'FORBIDDEN',
+      message: 'Too many requests unique',
+    })
+  },
+})
+
+export const rateLimitedProcedure = t.procedure.use(limiter)
