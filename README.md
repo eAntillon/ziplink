@@ -1,29 +1,22 @@
-# Create T3 App
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+# Ziplink
 
-## What's next? How do I make an app with this?
+ZipLink is a URL shortening service that utilizes the Base58 encoding scheme to efficiently compress URLs into a shorter, user-friendly format. This service is ideal for applications that require minimal URL length while maintaining a high level of readability and ease of sharing.
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+## Features
+- **URL Shortening**: Convert long URLs into concise, easy-to-share identifiers.
+- **Base58 Encoding**: Uses the Base58 alphabet to ensure URLs are readable and devoid of confusing characters.
+## Demo
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+ZipLink is deployed on Vercel, providing fast and reliable hosting for your URL shortening needs. Vercel's seamless integration with GitHub makes deployment a breeze, allowing for easy updates and continuous integration. 
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+https://ziplink-rho.vercel.app/
 
-## Learn More
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Screenshots
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+![App Screenshot](https://i.imgur.com/f8xxgif.png)
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
 
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+## Tech Stack
+ZipLink is built using the [T3 Stack](https://create.t3.gg/) (Typescript, Next.js, TRPC, NextAuth, Drizzle, Tailwind CSS) and [RadixUI](https://www.radix-ui.com/)
