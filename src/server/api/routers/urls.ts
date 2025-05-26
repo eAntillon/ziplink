@@ -20,7 +20,7 @@ export const urlRouter = createTRPCRouter({
     }),
 
   create: rateLimitedProcedure
-    .input(z.object({ longUrl: z.string().min(8) }))
+    .input(z.object({ longUrl: z.string().min(8), isEphemeral: z.boolean().optional() }))
     .mutation(async ({ ctx, input }) => {
       let shortUrl = generateShortLink();
       const consult = await ctx.db.query.urls.findFirst({
@@ -36,6 +36,7 @@ export const urlRouter = createTRPCRouter({
           url: input.longUrl,
           shortUrl: shortUrl,
           userId: userId ?? null,
+          isEphemeral: input.isEphemeral ?? false,
           expiresAt: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7),
         })
         .returning();
@@ -81,4 +82,20 @@ export const urlRouter = createTRPCRouter({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+
+  deleteLinkAfterUse: publicProcedure
+    .input(z.object({ shortUrl: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      try {
+        await ctx.db.delete(urls).where(eq(urls.shortUrl, input.shortUrl));
+        // Optional: server-side log
+        // console.log(`Ephemeral link ${input.shortUrl} deleted after use.`);
+      } catch (error) {
+        // console.error(`Error deleting ephemeral link ${input.shortUrl}:`, error);
+        // Do not re-throw, as redirect is more critical.
+        // If the link was already deleted or never existed, this will likely not throw.
+        // If there's a DB connection issue, it might throw.
+      }
+      return { success: true }; // Or simply return void
+    }),
 });

@@ -1,5 +1,6 @@
 import { relations, sql } from "drizzle-orm";
 import {
+  boolean,
   index,
   integer,
   pgTableCreator,
@@ -26,6 +27,7 @@ export const urls = createTable(
     url: varchar("url", { length: 255 }).notNull(),
     shortUrl: varchar("shortUrl", { length: 7 }).notNull(),
     userId: varchar("userId", { length: 255 }),
+    isEphemeral: boolean("is_ephemeral").default(false).notNull(),
     createdAt: timestamp("created_at")
       .default(sql`CURRENT_TIMESTAMP`)
       .notNull(),
