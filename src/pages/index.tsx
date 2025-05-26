@@ -17,7 +17,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { type url } from "~/types/url";
 import { useForm, type SubmitHandler } from "react-hook-form";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import getRandomRadixColor from "~/utils/color";
 import Head from "next/head";
 import toast from "react-hot-toast";
@@ -27,6 +27,7 @@ import { env } from "~/env";
 import Link from "next/link";
 import Image from "next/image";
 import t3logo from "../../public/t3-light.png";
+import SettingsModal from '~/components/SettingsModal';
 const GeneratedURLs = dynamic(() => import('~/components/GeneratedURLs'), { ssr: false })
 
 
@@ -79,6 +80,8 @@ export default function Home({ userGeneratedLinks }: IProps) {
 
   // const [links, setLinks] = useState<url[]>(userGeneratedLinks ?? []);
   const [userLinks, setUserLinks, removeUserLinks] = useLocalStorage("links", userGeneratedLinks ?? []);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [createEphemeralLinksByDefault] = useLocalStorage('createEphemeralLinksByDefault', false);
 
   const [copiedText, copy] = useCopyToClipboard()
 
@@ -132,6 +135,7 @@ export default function Home({ userGeneratedLinks }: IProps) {
     createLinkMutation.mutate(
       {
         longUrl: data.url,
+        isEphemeral: createEphemeralLinksByDefault,
       },
       {
         onSuccess: (data) => {
@@ -262,7 +266,7 @@ export default function Home({ userGeneratedLinks }: IProps) {
             <IconButton
               color="gray"
               variant="outline"
-              onClick={() => signIn()}
+              onClick={() => setIsSettingsModalOpen(true)}
             >
               <Icon icon="bx:cog" />
             </IconButton>
@@ -346,7 +350,7 @@ export default function Home({ userGeneratedLinks }: IProps) {
             </Link>
           </IconButton>
         </Flex>
-
+        <SettingsModal open={isSettingsModalOpen} onOpenChange={setIsSettingsModalOpen} />
       </main>
     </>
   );

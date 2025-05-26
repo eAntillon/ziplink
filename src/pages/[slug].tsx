@@ -21,9 +21,18 @@ export const getServerSideProps = async ({req, res}: {
     const url = await caller.urls.getLink({ id: req.url?.slice(1) ?? "" as string });
     console.log("FIND LONG URL", url)
     if (url) {
+      if (url.isEphemeral) {
+        try {
+          // Optional log: console.log(`Link ${url.shortUrl} is ephemeral, attempting deletion after use.`);
+          await caller.urls.deleteLinkAfterUse({ shortUrl: url.shortUrl });
+        } catch (deleteError) {
+          console.error(`Failed to delete ephemeral link ${url.shortUrl} after use:`, deleteError);
+          // Log the error, but do not block the redirect.
+        }
+      }
       return {
         redirect: {
-          destination: url.url ?? '/404',
+          destination: url.url ?? '/404', // Fallback to /404 if url.url is somehow null
           permanent: false,
         },
       }
