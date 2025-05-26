@@ -1,7 +1,7 @@
 import React from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import * as RadixSwitch from '@radix-ui/react-switch'; // Import Switch from Radix UI
-import { Cross2Icon } from '@radix-ui/react-icons';
+import { Icon } from '@iconify/react/dist/iconify.js'; // Import Iconify
 import { Flex, Text } from '@radix-ui/themes'; // Import Flex and Text from Radix Themes
 import { useLocalStorage } from 'usehooks-ts'; // Import useLocalStorage
 
@@ -50,7 +50,7 @@ const SettingsModal: React.FC<SettingsModalProps> = ({ open, onOpenChange }) => 
               className="absolute top-3 right-3 inline-flex h-6 w-6 items-center justify-center rounded-full bg-transparent text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300" 
               aria-label="Close"
             >
-              <Cross2Icon />
+              <Icon icon="bx:x" />
             </button>
           </Dialog.Close>
         </Dialog.Content>
